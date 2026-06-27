@@ -13,7 +13,7 @@ part of 'article_view_model.dart';
 final articleViewModelProvider = ArticleViewModelProvider._();
 
 final class ArticleViewModelProvider
-    extends $NotifierProvider<ArticleViewModel, List<Article>> {
+    extends $AsyncNotifierProvider<ArticleViewModel, List<Article>> {
   ArticleViewModelProvider._()
     : super(
         from: null,
@@ -31,29 +31,21 @@ final class ArticleViewModelProvider
   @$internal
   @override
   ArticleViewModel create() => ArticleViewModel();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(List<Article> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<List<Article>>(value),
-    );
-  }
 }
 
-String _$articleViewModelHash() => r'c21a88885dd54785f390467ee220c4f324feef24';
+String _$articleViewModelHash() => r'a174bea903e51fde1f0a934117945f885c48624f';
 
-abstract class _$ArticleViewModel extends $Notifier<List<Article>> {
-  List<Article> build();
+abstract class _$ArticleViewModel extends $AsyncNotifier<List<Article>> {
+  FutureOr<List<Article>> build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<List<Article>, List<Article>>;
+    final ref = this.ref as $Ref<AsyncValue<List<Article>>, List<Article>>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<List<Article>, List<Article>>,
-              List<Article>,
+              AnyNotifier<AsyncValue<List<Article>>, List<Article>>,
+              AsyncValue<List<Article>>,
               Object?,
               Object?
             >;

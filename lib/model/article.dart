@@ -1,25 +1,31 @@
 class Article {
-  final int id; 
+  final String id;
   final String title;
-  final String description;
+  final String content;
   final String imageUrl;
-  final String date;
+  final String author;
+  final String category;
+  final String createdAt;
 
   Article({
     required this.id,
     required this.title,
-    required this.description,
     required this.imageUrl,
-    required this.date,
+    required this.content,
+    required this.author,
+    required this.category,
+    required this.createdAt,
   });
 
-  factory Article.formJson(Map<String, dynamic> json) {
+  factory Article.fromJson(Map<String, dynamic> json) {
     return Article(
-      id: json['id'],
-      title: json['title'],
-      description: json['description'],
-      imageUrl: json['imageUrl'] ?? '',
-      date: json['date'],
+      id: json['_id'] ?? '',
+      title: json['title']?.toString() ?? 'No Title',
+      content: json['content']?.toString() ?? '',
+      imageUrl: json['imageUrl']?.toString() ?? '',
+      author: json['author']?.toString() ?? 'Admin',
+      category: json['category']?.toString() ?? '',
+      createdAt: json['createdAt']?.toString() ?? '',
     );
   }
 }

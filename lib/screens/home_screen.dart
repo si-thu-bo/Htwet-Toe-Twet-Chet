@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:htwettoe_twetchet/screens/article_view_screen.dart';
-import 'package:htwettoe_twetchet/viewmodels/weather_view_model.dart';
 import '../viewmodels/article_view_model.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -10,7 +9,6 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final articles = ref.watch(articleViewModelProvider);
-    final weatherAsync = ref.watch(weatherViewModelProvider);
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -61,79 +59,68 @@ class HomeScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              weatherAsync.when(
-                data: (weather) {
-                  return Container(
-                    height: 120,
-                    decoration: BoxDecoration(
-                      color: Colors.green[200],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Image.network(
-                          'https://openweathermap.org/img/wn/${weather.icon}@2x.png',
-                          width: 80,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              weather.temp.toString(),
-                              style: TextStyle(fontSize: 30),
-                            ),
-                            Text(weather.cityName),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                error: (error, statck) =>
-                    const Text('ရာသီဥတု အချက်အလက် မရနိုင်ပါ'),
-                loading: () => const Center(child: CircularProgressIndicator()),
-              ),
+              _WeatherCard(),
               const SizedBox(height: 10),
               const Text(
                 'စိတ်ဝင်စားဖွယ် သတင်းများ',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 5),
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: articles.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final article = articles[index];
-                  return Card(
-                    child: ListTile(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ArticleViewScreen(),
+              articles.when(
+                data: (articles) {
+                  if (articles.isEmpty) {
+                    return const Center(child: Text('သတင်းများ မရှိသေးပါ။'));
+                  }
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: articles.length,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (BuildContext context, int index) {
+                      final article = articles[index];
+                      return Card(
+                        child: ListTile(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ArticleViewScreen(),
+                              ),
+                            );
+                          },
+                          leading: article.imageUrl.isNotEmpty
+                              ? Image.network(
+                                  article.imageUrl,
+                                  height: 80,
+                                  width: 80,
+                                  fit: BoxFit.cover,
+                                  errorBuilder:(context, error, stackTrace) => Container(
+                                    height: 80,
+
+                                  width: 80,
+                                  color: Colors.grey[300],
+                                  child: Icon(Icons.broken_image, color: Colors.grey,),
+                                  ),
+                                )
+                              : Container(
+                                  height: 80,
+                                  width: 80,
+                                  color: Colors.grey,
+                                ),
+                          title: Text(article.title),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(article.content),
+                              Text(article.createdAt),
+                            ],
                           ),
-                        );
-                      },
-                      leading: article.imageUrl.isNotEmpty
-                          ? Image.asset(article.imageUrl, height: 80, width: 80)
-                          : Container(
-                              height: 80,
-                              width: 80,
-                              color: Colors.grey,
-                            ),
-                      title: Text(article.title),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(article.description),
-                          Text(article.date),
-                        ],
-                      ),
-                    ),
+                        ),
+                      );
+                    },
                   );
                 },
+                error: (error, stack) => Center(child: Text('Error: $error')),
+                loading: () => Center(child: CircularProgressIndicator()),
               ),
             ],
           ),
@@ -143,3 +130,29 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
+class _WeatherCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 120,
+      decoration: BoxDecoration(
+        color: Colors.green[200],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Icon(Icons.cloud, size: 100, color: Colors.blueGrey),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('29°C', style: TextStyle(fontSize: 30)),
+              Text('Meiktila'),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
