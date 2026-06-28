@@ -1,22 +1,22 @@
 class WeatherData {
   final String condition;
-  final double temp;      
-  final String icon;      
-  final String cityName;
+  final double temperature;
+  final String location;
+  final String iconCode;
 
   WeatherData({
     required this.condition,
-    required this.temp,
-    required this.icon,
-    required this.cityName,
+    required this.temperature,
+    required this.location,
+    required this.iconCode
   });
 
   factory WeatherData.fromJson(Map<String, dynamic> json) {
     return WeatherData(
-      condition: json['weather'][0]['main'],
-      temp: json['main']['temp'].toDouble(),
-      icon: json['weather'][0]['icon'],
-      cityName: json['name'],
+      condition: json['condition'],
+      temperature: json['temperature'],
+      location: json['location'],
+      iconCode: json['iconCode']
     );
   }
 }

@@ -4,7 +4,7 @@ import '../model/weather_data.dart';
 
 part 'weather_view_model.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class WeatherViewModel extends _$WeatherViewModel {
   @override
   Future<WeatherData> build() {

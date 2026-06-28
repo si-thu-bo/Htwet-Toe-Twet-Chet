@@ -20,7 +20,7 @@ final class WeatherViewModelProvider
         argument: null,
         retry: null,
         name: r'weatherViewModelProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -33,7 +33,7 @@ final class WeatherViewModelProvider
   WeatherViewModel create() => WeatherViewModel();
 }
 
-String _$weatherViewModelHash() => r'd41838e920829d7b912638c4eabaaa54435ddd9f';
+String _$weatherViewModelHash() => r'c413c13845ca55467eebfca1dd13a325d009d632';
 
 abstract class _$WeatherViewModel extends $AsyncNotifier<WeatherData> {
   FutureOr<WeatherData> build();

@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:htwettoe_twetchet/helper/date_time.dart';
+import 'package:htwettoe_twetchet/model/article.dart';
 
 class ArticleViewScreen extends ConsumerWidget {
-  const ArticleViewScreen({super.key});
+  final Article article;
+  const ArticleViewScreen({super.key, required this.article});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'မြန်မာနိုင်ငံမှာ ပြင်ဆင်ရမယ့် အယ်နီညို ကျော်ကြီးများ နေသည်',
+          article.title,
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -20,9 +23,9 @@ class ArticleViewScreen extends ConsumerWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               SizedBox(
                 width: double.infinity,
@@ -30,17 +33,29 @@ class ArticleViewScreen extends ConsumerWidget {
 
                 child: ClipRRect(
                   borderRadius: BorderRadiusGeometry.circular(12),
-                  child: Image.asset('assets/images/1.jpeg', fit: BoxFit.cover),
+                  child: Image.network(article.imageUrl, fit: BoxFit.cover),
                 ),
               ),
               SizedBox(height: 25),
-              Text(
-                'အယ်နီညို',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    article.category,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  Text(
+                    'Author by ${article.author}',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
               SizedBox(height: 10),
+              Text(article.content, textAlign: TextAlign.justify),
+              const SizedBox(height: 15),
               Text(
-                'ရာသီဥတုပြောင်းလဲမှုကြောင့် စိုက်ပျိုးရေးအပေါ် သက်ရောက်နိုင်ခြေများ။',
+                formatDate(article.createdAt),
+                style: TextStyle(color: Colors.blueGrey),
               ),
             ],
           ),
